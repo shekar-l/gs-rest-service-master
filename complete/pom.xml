@@ -56,7 +56,7 @@
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <configuration>
-                    <url>http://192.168.1.30:8080/manager/text</url>
+                    <url>http://garageraspi.local:8080/manager/text</url>
                     <server>mytomcat</server>
                     <path>/GarageDoorController</path>
                 </configuration>

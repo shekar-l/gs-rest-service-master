@@ -5,10 +5,12 @@ public class SQLiteJDBCManager
 {
     public static void main( String args[] )
     {
+        System.out.println("SQLiteJDBCManager main()");
         SQLiteJDBCManager sqLiteJDBC = new SQLiteJDBCManager();
     }
 
     public SQLiteJDBCManager() {
+        System.out.println("SQLiteJDBCManager constructor");
         initializeSqliteDB();
     }
 

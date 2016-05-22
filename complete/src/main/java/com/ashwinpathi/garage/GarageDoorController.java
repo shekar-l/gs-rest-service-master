@@ -23,8 +23,6 @@ public class GarageDoorController {
 
     @Autowired
     private GarageDoorManager garageDoorManager;
-    @Autowired
-    private SQLiteJDBCManager sqLiteJDBCManager;
 
     public GarageDoorController() {
         System.out.println("Initialized Greeting Controller Bean");
