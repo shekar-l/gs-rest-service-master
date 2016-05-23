@@ -43,8 +43,11 @@ public class GarageDoorController {
 
     @RequestMapping(value="/pressButton",method=RequestMethod.POST)
     public @ResponseBody
-    void pressSwitch(@RequestParam(value="secret") String secretCode) throws InterruptedException
+    void pressSwitch(@RequestHeader(value="secret", defaultValue="bad") String secret,
+                     @RequestParam(value="secret") String secretCode)
+            throws InterruptedException
     {
+        System.out.println("secret header = " + secret);
         if(secretCode.equals("abc"))
             garageDoorManager.pulseToOutputPin();
     }

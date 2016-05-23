@@ -8,6 +8,11 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
  * Created by slakshm on 5/20/16
  */
 public class GarageDoorManager {
+/*
+        cd "C:\Users\Shekar\Downloads\gs-rest-service-master\complete"
+        mvn tomcat7:undeploy
+        mvn -e clean install tomcat7:deploy
+*/
     private GpioController gpio;
     private GpioPinDigitalOutput outputPin;
     private GpioPinDigitalInput inputPin;
@@ -22,17 +27,13 @@ public class GarageDoorManager {
         if(gpio == null || outputPin == null) {
             System.out.println("--> Initializing Pins ...");
             gpio = GpioFactory.getInstance();
-            outputPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "MyLED", PinState.LOW);
-            inputPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, "MyLED2", PinPullResistance.PULL_DOWN);
+            outputPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "SimulateSwitchPress", PinState.LOW);
+            inputPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, "DoorLimitSwitch", PinPullResistance.PULL_DOWN);
+            inputPin.setDebounce(1000);
             initializeDoorStatus();
             // register a listener
-            try {
-                setupListeners();
-                System.out.println("Listener setup");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("e = " + e);
-            }
+            setupListeners();
+            System.out.println("Listener setup");
 
             System.out.println("--> Initialized Pin ...");
         } else {
@@ -45,15 +46,13 @@ public class GarageDoorManager {
         isDoorOpen = !(inputPin.getState() + "").equals("LOW");
     }
 
-    private void setupListeners() throws InterruptedException{
-        // create GPIO listener
-        //listener is on pin 27
+    private void setupListeners() {
+        System.out.println("Creating a listener on input pin");
         GpioPinListenerDigital listener  = new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
-                System.out.println("1. inputPin.getState() = " + inputPin.getState());
+                System.out.println(" --> GPIO pin state change: " + event.getPin() + " new state is " + event.getState() + "    "+"inputPin.getState() = " + inputPin.getState());
                 initializeDoorStatus();
             }
         };
@@ -68,6 +67,7 @@ public class GarageDoorManager {
     {
         // send an output pulse, but don't wait
         // asynchronous call
+        System.out.println("Sending a 2 second pulse to output pin");
         outputPin.pulse(2000, false);
     }
 }
