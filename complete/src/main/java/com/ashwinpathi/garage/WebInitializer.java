@@ -10,6 +10,7 @@ public class WebInitializer extends SpringBootServletInitializer {
         return application.sources(
                  Application.class
                 ,GarageDoorManager.class
+                ,MailManager.class
 //                ,SQLiteJDBCManager.class
 );
     }

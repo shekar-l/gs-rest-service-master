@@ -3,6 +3,7 @@ package com.ashwinpathi.garage;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by slakshm on 5/20/16
@@ -27,7 +28,7 @@ public class GarageDoorManager {
         if(gpio == null || outputPin == null) {
             System.out.println("--> Initializing Pins ...");
             gpio = GpioFactory.getInstance();
-            outputPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "SimulateSwitchPress", PinState.LOW);
+            outputPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_25, "SimulateSwitchPress", PinState.LOW);
             inputPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, "DoorLimitSwitch", PinPullResistance.PULL_DOWN);
             inputPin.setDebounce(1000);
             initializeDoorStatus();
@@ -53,6 +54,8 @@ public class GarageDoorManager {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 System.out.println(" --> GPIO pin state change: " + event.getPin() + " new state is " + event.getState() + "    "+"inputPin.getState() = " + inputPin.getState());
+                MailManager mailManager = new MailManager();
+                mailManager.generateAndSendEmail("The door is now " + inputPin.getState());
                 initializeDoorStatus();
             }
         };
@@ -66,8 +69,8 @@ public class GarageDoorManager {
     public void pulseToOutputPin()
     {
         // send an output pulse, but don't wait
-        // asynchronous call
-        System.out.println("Sending a 2 second pulse to output pin");
-        outputPin.pulse(2000, false);
+        // false=asynchronous call
+        System.out.println("Sending a 4 second pulse to output pin");
+        outputPin.pulse(4000, false);
     }
 }
